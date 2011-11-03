@@ -1,0 +1,134 @@
+#! /bin/bash
+VERSION=0.1.5
+LASTUPDATED=11-21-2009
+BACKUPDIR=~/.backup/android
+USER=${username-`whoami`}
+APP2SD=1
+
+backupscript() {
+  export PATH=$PATH:$BACKUPDIR
+	mkdir -p $BACKUPDIR
+	sudo echo "Gaining root privleges for adb..."
+	sudo adb kill-server
+	cd $BACKUPDIR
+	if [ -f $BACKUPDIR ]
+		then 
+			rm -Rvf $BACKUPDIR
+	fi
+	sudo adb pull /system/app $BACKUPDIR/system/app
+	sudo abd pull /data $BACKUPDIR/data
+	echo "---------- Backed Other Settings"
+	sudo chown -R $USER $BACKUPDIR
+}
+restorescript() {
+	export PATH=$PATH:$BACKUPDIR
+	sudo echo "Gaining root privleges for adb..."
+	sudo adb kill-server
+	#sudo adb push $BACKUPDIR/apps /system/sd/app
+	echo "----------- Installing Applications"
+	cd $BACKUPDIR/system/app
+	for searchfile in ./*.apk
+		do
+		echo "------------ Processing $searchfile"
+		sudo adb install "$searchfile" 
+	done
+	echo "---------- restore backup"
+	sudo adb shell su
+	sudo adb shell fix_permissions
+	sudo abd pull $BACKUPDIR/data /data
+}
+
+installabr()
+{
+	echo "---------- Removing previous installations"
+	sudo rm -Rf /usr/local/abrtool
+	sudo rm /usr/local/bin/abrtool
+	echo "---------- Install Android-Backup-Recovery Tool"
+	sudo mkdir /usr/local/abrtool
+	sudo cp $PWD/*.* /usr/local/abrtoolv
+	sudo cp $PWD/abrtool /usr/local/abrtool
+	sudo ln -s /usr/local/abrtool/abrtool /usr/local/bin/abrtool
+	zenity --info --text "Successfully Installed" --title "Android-Backup-Recovery"
+}
+
+print_usage()
+{
+	echo ""
+	echo "Usage: $0 -b --backup"
+	echo "       $0 -r --restore"
+	echo "       $0 -i --install"
+	echo "       $0 -v --version"
+	echo ""
+	echo "Valid arugments"
+	echo "-b --backup, Backup device to computer"
+	echo "-r --restore, Restore device from computer"
+	echo ""
+	echo "-i --install, Install abrtool"
+	echo "-v --version, Version"
+	echo ""
+}
+print_version()
+{
+	echo ""
+	echo "Android-Backup-Restore Tools"
+	echo "Version $VERSION"
+	echo "Last Updated on $LASTUPDATED"
+	echo ""
+}
+if [ $# -lt 1 ]
+then
+	print_usage
+	exit 1
+fi
+while [ -n "$1" ]
+do
+	case "$1" in
+	-b)
+		backupscript
+		shift
+		;;
+	--backup)
+		backupscript
+		shift
+		;;
+	-r)
+		backupscript
+		shift
+		;;
+	--restore)
+		backupscript
+		shift
+		;;
+	-i)
+		installabr
+		shift
+		;;
+	--install)
+		installabr
+		shift
+		;;
+	-v)
+		print_version
+		shift
+		;;
+	--version)
+		print_version
+		shift
+		;;
+	*)
+		print_usage
+		exit 1
+	esac
+done
+
+# Reboot or Not
+case $ans in
+    Reboot)
+        adb shell reboot
+	zenity --info --text "Rebooting Device"
+    ;;
+    Back-to-Shell)
+        exit
+    ;;
+esac
+exit

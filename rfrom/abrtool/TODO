@@ -1,0 +1,7 @@
+Android-Backup-Restore Tool for Linux
+Version 0.1
+
+- Create installable feature. (ln -s to /usr/local.bin via ./abrtool -i)
+- Read configuration file (default.config)
+- Interactive zenity dialogs
+- Backup versions (choose which backup you would like to use)

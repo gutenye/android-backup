@@ -1,0 +1,9 @@
+#!/bin/zsh
+
+BACKUPDIR=/home/guten/.backup/android
+
+cd $BACKUPDIR/system/app
+for apk in *.apk; do
+	echo "install $apk"
+	sudo adb install $apk
+done
