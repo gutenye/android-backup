@@ -1,3 +1,17 @@
+Profile Configuration
+---------------------
+
+for example, a 'guten' profile
+
+	/sdcard/.abrt/
+		conf       # global settings 
+		guten/
+			conf     # profile settings
+			files    # used in `rsync --files-from=files`
+			excludes # optional.  used in `rsync --exclude-from=excludes`
+
+also see SOURCE/conf/examples
+
 Android File System Layout
 --------------------------
 
@@ -14,15 +28,3 @@ more details in /data/data
 		com.google.android.providers.settings
 		com.android.launcher
 		com.android.providers.userdictionary
-
-Profile Configuration
----------------------
-
-for example, a 'guten' profile
-
-	/sdcard/.abrt/
-		conf       # global settings 
-		guten/
-			conf     # profile settings
-			files    # used in `rsync --files-from=files`
-			excludes # optional.  used in `rsync --exclude-from=excludes`

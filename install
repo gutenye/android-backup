@@ -1,4 +1,5 @@
 #!/bin/bash
 
 adb push bin system/xbin
+adb shell mkdir /sdcard/.abrt
 adb push conf /sdcard/.abrt

@@ -28,7 +28,7 @@ Setup Configuration
 
 	# cp /sdcard/.abrt/examples/system to /sdcard/.abrt and change the settings.
 
-see [Configuration](http://github.com/GutenYe/abt/docs/Note.md)
+see [Configuration](https://github.com/GutenYe/abt/blob/master/docs/Note.md)
 
 Backup
 
@@ -47,9 +47,11 @@ Install
 
 Requiments
 
-	* ssh and rsync in both android and linux side.
-	* current need `adb shell` returns root.
-	* tested in Linux
+* ssh and rsync in both android and linux side.
+* current need `adb shell` returns root.
+* tested in Linux
+
+Install
 
 1. install rsync, ssh into android, you can get it from [android-utils](https://github.com/GutenYe/android-utils)
 
@@ -57,7 +59,7 @@ Requiments
 
 3. auto install: run `$ ./install`
 
-3. manual install: see install source code.
+3. manual install: see [install script](https://github.com/GutenYe/abt/blob/master/install) source code.
 
 
 Contributing
