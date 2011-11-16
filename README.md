@@ -21,6 +21,8 @@ Features
 * Fast: behind rsync
 * Flexible: you can configure which files need to be backup in a plan text. 
 
+it can backup everything: user apps, system apps, sytem settings, user settings, SMS messages, Memo data, Browser bookmarks, sdcard data ..
+
 Usage
 -----
 
@@ -77,6 +79,10 @@ Resources
 ---------
 
 	* [abrtool](http://code.google.com/p/abrtool/) Simple backup and restore tool for android devices on linux based machines 
+
+	* [Rsync](http://rsync.samba.org/) fast incremental file transfer. 
+
+	* [SSH](http://www.openssh.com/) Secure Shell, for remote shell services or command execution
 
 Copyright
 ---------
