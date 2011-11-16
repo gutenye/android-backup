@@ -7,6 +7,7 @@ function backup() {
 
 	profile=$1
 	dir=$root/$profile
+	source $root/conf
 	source $dir/conf
 	options=""
 
@@ -23,14 +24,15 @@ function restore() {
 	
 	profile=$1
 	dir=$root/$profile
+	source $root/conf
 	source $dir/conf
 	
 	# restore app
 	ssh $host "if [[ -d $dest/data/app ]]; then for app in $dest/data/app/*.apk; do $adb install \$app; done; fi"
 	
 	# restore data
-        rsync -rlptDzHE --recursive -vh --numeric-ids  \                               
-	        --exclude=/data/app \                                                  
+        rsync -rlptDzHE --recursive -vh --numeric-ids  \
+	        --exclude=/data/app \
                 $host:$dest $src
 	
 	# fix /data/data owner group
@@ -48,6 +50,7 @@ function restore() {
 	
 	echo "reboot the system now..."
 	sleep 1
+	reboot
 }
 
 function list() {
