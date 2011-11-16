@@ -1,7 +1,10 @@
 #!/system/xbin/bash
 root="/sdcard/.abt"
+export HOME="/sdcard"
 
 function backup() {
+	[[ -z $1 ]] && print_usage && exit
+
 	profile=$1
 	dir=$root/$profile
 	source $dir/conf
@@ -12,31 +15,54 @@ function backup() {
 	rsync -azHE --recursive -vh --del --delete-excluded --numeric-ids  \
 		--files-from=$dir/files  \
 		$options \
-		$src $dest
+		$src $host:$dest
 }
 
 function restore() {
+	[[ -z $1 ]] && print_usage && exit
+	
 	profile=$1
 	dir=$root/$profile
 	source $dir/conf
-
-	# restore files
-	rsync -rlptDzHE --recursive -vh --numeric-ids  \
-		--exclude=/data/app \
-		$dest $src
-
-	# fix owner group
-	for data in /data/data/*; do
-		owner=`ls -ld $data | awk '{print $3}'`
-		group=`ls -ld $data | awk '{print $4}'`
-		echo "chown $owner:$group $data"
-		chown $owner:$group -R $data 
-		chown system:system -R $data/lib
-	done
-
+	
+	# restore app
+	ssh $host "if [[ -d $dest/data/app ]]; then for app in $dest/data/app/*.apk; do $adb install \$app; done; fi"
+	
+	# restore data
+        rsync -rlptDzHE --recursive -vh --numeric-ids  \                               
+	        --exclude=/data/app \                                                  
+                $host:$dest $src
+	
+	# fix /data/data owner group
+	ret=`ssh $host "[[ -d $dest/data/data ]] && echo true || echo false"`
+	if [[ $ret = 'true' ]]; then
+	        for data in /data/data/*; do                                                   
+		        owner=`ls -ld $data | awk '{print $3}'`                                
+	                group=`ls -ld $data | awk '{print $4}'`                                
+	                echo "chown $owner:$group $data"                                       
+	                chown $owner:$group -R $data                                    
+	                chown system:system -R $data/lib                                
+	        done  
+	fi
+	
+	
 	echo "reboot the system now..."
 	sleep 1
-	reboot
+}
+
+function list() {
+	ls $root
+}
+
+function print_usage() {
+cat <<EOF
+USAGE: abt <action> [arguments ..]
+
+  ACTION
+    backup <profile>     # backup system
+    restore <profile>    # restore system
+    list                 # list all profiles
+EOF
 }
 
 
@@ -47,6 +73,12 @@ function cli() {
 			;;
 		restore )
 			restore $2
+			;;
+		list )
+			list
+			;;
+		* )
+			print_usage
 			;;
 	esac
 }
