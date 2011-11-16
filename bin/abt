@@ -1,0 +1,54 @@
+#!/system/xbin/bash
+root="/sdcard/.abt"
+
+function backup() {
+	profile=$1
+	dir=$root/$profile
+	source $dir/conf
+	options=""
+
+	[[ -f $dir/excludes ]] && options="$options --exclude-from=$dir/excludes"
+
+	rsync -azHE --recursive -vh --del --delete-excluded --numeric-ids  \
+		--files-from=$dir/files  \
+		$options \
+		$src $dest
+}
+
+function restore() {
+	profile=$1
+	dir=$root/$profile
+	source $dir/conf
+
+	# restore files
+	rsync -rlptDzHE --recursive -vh --numeric-ids  \
+		--exclude=/data/app \
+		$dest $src
+
+	# fix owner group
+	for data in /data/data/*; do
+		owner=`ls -ld $data | awk '{print $3}'`
+		group=`ls -ld $data | awk '{print $4}'`
+		echo "chown $owner:$group $data"
+		chown $owner:$group -R $data 
+		chown system:system -R $data/lib
+	done
+
+	echo "reboot the system now..."
+	sleep 1
+	reboot
+}
+
+
+function cli() {
+	case $1 in
+		backup )
+			backup $2
+			;;
+		restore )
+			restore $2
+			;;
+	esac
+}
+
+cli $*

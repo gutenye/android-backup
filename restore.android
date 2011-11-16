@@ -1,0 +1,8 @@
+#!/bin/zsh
+
+for app in /home/guten/backup/m11/data/app/*; do
+	adb install $app
+done
+
+echo "now, enter adb shell and run restore"
+

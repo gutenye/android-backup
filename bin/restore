@@ -1,4 +1,0 @@
-#!/system/xbin/bash
-
-rsync -azHE --recursive -vh --numeric-ids  \
-  guten@192.168.1.108:/home/guten/backup/m11/ /
