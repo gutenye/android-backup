@@ -64,6 +64,12 @@ Install
 3. manual install: see [install script](https://github.com/GutenYe/abt/blob/master/install) source code.
 
 
+Other Backup Technologies
+------------------------
+
+* Cloud: Google contacts, calendar ..
+* [Nand Backup](https://www.google.com/search?hl=en&source=hp&q=nand+backup+android): full system backup.
+
 Contributing
 -------------
 
